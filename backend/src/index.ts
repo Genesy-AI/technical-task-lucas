@@ -294,7 +294,7 @@ app.post('/leads/verify-emails', async (req: Request, res: Response) => {
         })
 
         results.push({ leadId: lead.id, emailVerified: isVerified })
-        verifiedCount += 1
+        if (isVerified) verifiedCount += 1
       } catch (error) {
         errors.push({
           leadId: lead.id,

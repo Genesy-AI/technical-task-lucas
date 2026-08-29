@@ -1,15 +1,17 @@
+// Same shape as the frontend isValidEmail check (frontend/src/utils/csvParser.ts)
+// so the two layers agree on what a well-formed address looks like.
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export async function verifyEmail(email: string): Promise<boolean> {
-    if (email.includes('john.doe')) {
-        return false;
-    }
+  // Reject anything that isn't a well-formed address.
+  if (!EMAIL_REGEX.test(email)) {
+    return false
+  }
 
-    if (email.includes('jane.smith')) {
-        await new Promise((resolve) => setTimeout(resolve, 20000));
-    }
+  // Simulated provider result: this address is well-formed but unverifiable.
+  if (email.includes('john.doe')) {
+    return false
+  }
 
-    if (/\+/.test(email)) {
-        return false;
-    }
-
-    return true;
+  return true
 }
