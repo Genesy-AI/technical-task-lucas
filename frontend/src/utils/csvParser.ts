@@ -17,6 +17,20 @@ export const isValidEmail = (email: string): boolean => {
   return emailRegex.test(email)
 }
 
+// Validates ISO 3166-1 alpha-2 country codes (e.g. US, ES, FR) using the
+// browser-native Intl.DisplayNames. A code is valid only when it is exactly two
+// ASCII letters and resolves to a region name distinct from the code itself.
+export const isValidCountryCode = (code: string): boolean => {
+  if (!/^[A-Za-z]{2}$/.test(code)) return false
+  try {
+    const region = code.toUpperCase()
+    const name = new Intl.DisplayNames(['en'], { type: 'region' }).of(region)
+    return name !== undefined && name !== region
+  } catch {
+    return false
+  }
+}
+
 export const parseCsv = (content: string): CsvLead[] => {
   if (!content?.trim()) {
     throw new Error('CSV content cannot be empty')
@@ -87,6 +101,9 @@ export const parseCsv = (content: string): CsvLead[] => {
       errors.push('Email is required')
     } else if (!isValidEmail(lead.email)) {
       errors.push('Invalid email format')
+    }
+    if (lead.countryCode && !isValidCountryCode(lead.countryCode)) {
+      errors.push('Invalid country code')
     }
 
     data.push({
